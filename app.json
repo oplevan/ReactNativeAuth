@@ -1,4 +1,10 @@
 {
   "name": "ReactNativeAuth",
-  "displayName": "ReactNativeAuth"
+  "displayName": "ReactNativeAuth",
+  "plugins": ["expo-secure-store"],
+  "ios": {
+    "config": {
+      "usesNonExemptEncryption": false
+    }
+  }
 }
