@@ -9,7 +9,7 @@ type AuthProps = {
   onLogout?: () => Promise<any>;
 };
 
-const TOKEN_KEY = process.env.TOKEN_KEY!;
+const TOKEN_KEY = 'jwt-token-key';
 const API_URL = process.env.API_URL;
 const AuthContext = createContext<AuthProps>({});
 
