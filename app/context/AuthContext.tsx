@@ -12,7 +12,7 @@ type AuthProps = {
   onRegister?: (email: string, password: string) => Promise<any>;
   onLogin?: (credentials: LoginCredentials) => Promise<any>;
   onLogout?: () => Promise<any>;
-  loading?: boolean;
+  isLoading?: boolean;
 };
 
 const TOKEN_KEY = 'jwt-token-key';

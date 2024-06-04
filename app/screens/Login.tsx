@@ -23,6 +23,7 @@ import Input from '../components/Input';
 
 // icons
 import Icon from 'react-native-vector-icons/Ionicons';
+import {ActivityIndicatorOverlay} from '../components/ActivityIndicatorOverlay';
 
 const loginSchema = z.object({
   email: z
@@ -37,7 +38,7 @@ const loginSchema = z.object({
 
 export default function LoginScreen({navigation}: any) {
   const passwordInputRef = useRef<TextInput>(null);
-  const {onLogin} = useAuth();
+  const {onLogin, isLoading} = useAuth();
 
   const methods = useForm({
     resolver: zodResolver(loginSchema),
@@ -54,6 +55,7 @@ export default function LoginScreen({navigation}: any) {
 
   return (
     <View style={styles.container}>
+      {isLoading && <ActivityIndicatorOverlay text="Logging in..." />}
       <FormProvider {...methods}>
         <Input
           name="email"
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 38,
     backgroundColor: '#fff',
+    position: 'relative',
   },
   button: {
     marginTop: 25,
