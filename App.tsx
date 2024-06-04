@@ -7,6 +7,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from './app/screens/Home';
 import Login from './app/screens/Login';
 import Register from './app/screens/Register';
+import ForgotPassword from './app/screens/ForgotPassword';
 
 // import components
 import HeaderBackButton from './app/components/HeaderBackButton';
@@ -23,6 +24,7 @@ type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Register: undefined;
+  Forgot: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -44,6 +46,13 @@ const RootStack = () => {
               },
             }}>
             <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen
+              name="Forgot"
+              component={ForgotPassword}
+              options={({navigation}) => ({
+                headerLeft: () => <HeaderBackButton navigation={navigation} />,
+              })}
+            />
             <Stack.Screen
               name="Register"
               component={Register}

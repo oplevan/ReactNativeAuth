@@ -1,13 +1,28 @@
 import React, {useRef} from 'react';
-import {View, StyleSheet, TextInput, Text, Pressable} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Text,
+  Pressable,
+  Alert,
+} from 'react-native';
 import {z} from 'zod';
-import Input from '../components/Input';
-import Form from '../components/Form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {LoginCredentials, useAuth} from '../context/AuthContext';
+import {
+  FieldValues,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
 
-type formData = {
-  email: string;
-  password: string;
-};
+// components
+import Button from '../components/Button';
+import Input from '../components/Input';
+
+// icons
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const loginSchema = z.object({
   email: z
@@ -22,32 +37,62 @@ const loginSchema = z.object({
 
 export default function LoginScreen({navigation}: any) {
   const passwordInputRef = useRef<TextInput>(null);
+  const {onLogin} = useAuth();
 
-  const handleLogin = (data: formData) => {
-    console.log('Login Data', data);
+  const methods = useForm({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const handleLogin: SubmitHandler<LoginCredentials> = async data => {
+    const response = await onLogin!(data as LoginCredentials);
+    if (response?.error) {
+      Alert.alert('Error', response.msg);
+    } else {
+      Alert.alert('Success', 'You have logged in successfully');
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Form schema={loginSchema} onSubmit={handleLogin}>
+      <FormProvider {...methods}>
         <Input
           name="email"
-          label="Enter your email"
+          label="Email"
           returnKeyType="next"
           onSubmitEditing={() => passwordInputRef.current?.focus()}
         />
         <Input
           name="password"
-          label="Enter your password"
+          label="Password"
           secureTextEntry
           ref={passwordInputRef}
           returnKeyType="done"
         />
-      </Form>
-      <View style={styles.textContainer}>
+        <Pressable
+          onPress={() => navigation.navigate('Forgot')}
+          style={styles.forgotPasswordText}>
+          <Text>Forgot password?</Text>
+        </Pressable>
+        <Button
+          title="Login"
+          onPress={methods.handleSubmit(
+            handleLogin as SubmitHandler<FieldValues>,
+          )}
+          style={styles.button}
+        />
+      </FormProvider>
+      <Text style={styles.orText}>or</Text>
+      <Button
+        variant="outlined"
+        title="Continue with Google"
+        onPress={() => console.log('Continue with Google')}
+        style={styles.button}
+        icon={<Icon name="logo-google" size={25} color="#000" />}
+      />
+      <View style={styles.registerTextContainer}>
         <Text>Don't have an account?</Text>
         <Pressable onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.signUpText}>Sign Up</Text>
+          <Text style={styles.linkText}>Register</Text>
         </Pressable>
       </View>
     </View>
@@ -60,12 +105,23 @@ const styles = StyleSheet.create({
     padding: 38,
     backgroundColor: '#fff',
   },
-  textContainer: {
-    marginTop: 13,
+  button: {
+    marginTop: 25,
+  },
+  forgotPasswordText: {
+    alignSelf: 'flex-end',
+  },
+  orText: {
+    marginTop: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  registerTextContainer: {
+    marginTop: 45,
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  signUpText: {
+  linkText: {
     fontWeight: 'bold',
     marginLeft: 5,
   },
