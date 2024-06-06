@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {LoginCredentials, useAuth} from '../context/AuthContext';
+import {Login, useAuth} from '../context/AuthContext';
 import {
   FieldValues,
   FormProvider,
@@ -41,11 +41,12 @@ export default function LoginScreen({navigation}: any) {
   const {onLogin, isLoading} = useAuth();
 
   const methods = useForm({
+    mode: 'onBlur',
     resolver: zodResolver(loginSchema),
   });
 
-  const handleLogin: SubmitHandler<LoginCredentials> = async data => {
-    const response = await onLogin!(data as LoginCredentials);
+  const handleLogin: SubmitHandler<Login> = async data => {
+    const response = await onLogin!(data as Login);
     if (response?.error) {
       Alert.alert('Error', response.msg);
     } else {

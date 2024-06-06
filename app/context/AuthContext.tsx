@@ -2,15 +2,20 @@ import React, {createContext, useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-export type LoginCredentials = {
+export type Login = {
+  email: string;
+  password: string;
+};
+
+export type Register = {
   email: string;
   password: string;
 };
 
 type AuthProps = {
   authState?: {token: string | null; authenticated: boolean | null};
-  onRegister?: (email: string, password: string) => Promise<any>;
-  onLogin?: (credentials: LoginCredentials) => Promise<any>;
+  onRegister?: (data: Register) => Promise<any>;
+  onLogin?: (credentials: Login) => Promise<any>;
   onLogout?: () => Promise<any>;
   isLoading?: boolean;
 };
@@ -44,13 +49,10 @@ export const AuthProvider = ({children}: any) => {
     loadToken();
   }, []);
 
-  const onRegister = async (email: string, password: string) => {
+  const onRegister = async (data: Register) => {
     try {
       setIsLoading(true);
-      return await axios.post(`${API_URL}/auth/register`, {
-        email,
-        password,
-      });
+      return await axios.post(`${API_URL}/auth/register`, data);
     } catch (error: any) {
       console.log(error);
       return {
@@ -62,7 +64,7 @@ export const AuthProvider = ({children}: any) => {
     }
   };
 
-  const onLogin = async (credentials: LoginCredentials) => {
+  const onLogin = async (credentials: Login) => {
     try {
       setIsLoading(true);
       const response = await axios.post(`${API_URL}/auth/login`, credentials);
