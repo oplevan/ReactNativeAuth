@@ -45,9 +45,10 @@ export default function RegisterScreen({navigation}: any) {
     resolver: zodResolver(loginSchema),
   });
 
-  const handleLogin: SubmitHandler<Register> = async data => {
+  const handleRegister: SubmitHandler<Register> = async data => {
     const response = await onRegister!(data as Register);
     if (response?.error) {
+      console.log(response);
       Alert.alert('Error', response.msg);
     } else {
       Alert.alert('Success', 'You have signed up successfully');
@@ -74,7 +75,7 @@ export default function RegisterScreen({navigation}: any) {
         <Button
           title="Sign Up"
           onPress={methods.handleSubmit(
-            handleLogin as SubmitHandler<FieldValues>,
+            handleRegister as SubmitHandler<FieldValues>,
           )}
           style={styles.button}
         />

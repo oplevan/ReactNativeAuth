@@ -24,6 +24,7 @@ import Input from '../components/Input';
 // icons
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ActivityIndicatorOverlay} from '../components/ActivityIndicatorOverlay';
+import {useModal} from '../context/ModalContext';
 
 const loginSchema = z.object({
   email: z
@@ -39,6 +40,7 @@ const loginSchema = z.object({
 export default function LoginScreen({navigation}: any) {
   const passwordInputRef = useRef<TextInput>(null);
   const {onLogin, isLoading} = useAuth();
+  const {showModal} = useModal();
 
   const methods = useForm({
     mode: 'onBlur',
@@ -48,7 +50,27 @@ export default function LoginScreen({navigation}: any) {
   const handleLogin: SubmitHandler<Login> = async data => {
     const response = await onLogin!(data as Login);
     if (response?.error) {
-      Alert.alert('Error', response.msg);
+      console.log(response);
+      if (response.status === 403) {
+        showModal(
+          'Email Not Verified',
+          'Please verify your account by clicking the link in the email we sent to you. Also check the spam folder. If you do not have this email then click the button below to resend it.',
+          <>
+            <Button
+              title="Resend verification email"
+              onPress={() => {
+                // Call function to resend verification email
+                showModal(
+                  'Verification Email Sent',
+                  'A new verification email has been sent to your inbox.',
+                );
+              }}
+            />
+          </>,
+        );
+      } else {
+        Alert.alert('Error: ' + response.status, response.msg);
+      }
     } else {
       Alert.alert('Success', 'You have logged in successfully');
     }

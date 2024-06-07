@@ -76,9 +76,10 @@ export const AuthProvider = ({children}: any) => {
       await SecureStore.setItemAsync(TOKEN_KEY, response.data.token);
       return {success: true};
     } catch (error: any) {
-      console.log(error);
+      // console.log(JSON.stringify(error.response, null, '\t'));
       return {
         error: true,
+        status: error.response.status,
         msg: error.response?.data?.message || 'Login failed',
       };
     } finally {

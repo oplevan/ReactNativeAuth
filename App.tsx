@@ -11,11 +11,14 @@ import ForgotPassword from './app/screens/ForgotPassword';
 
 // import components
 import HeaderBackButton from './app/components/HeaderBackButton';
+import {ModalProvider} from './app/context/ModalContext';
 
 export default function App(): React.JSX.Element {
   return (
     <AuthProvider>
-      <RootStack />
+      <ModalProvider>
+        <RootStack />
+      </ModalProvider>
     </AuthProvider>
   );
 }
