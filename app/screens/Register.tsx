@@ -10,6 +10,7 @@ import {
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Register, useAuth} from '../context/AuthContext';
+import {useModal} from '../context/ModalContext';
 import {
   FieldValues,
   FormProvider,
@@ -20,10 +21,10 @@ import {
 // components
 import Button from '../components/Button';
 import Input from '../components/Input';
+import Loader from '../components/Loader';
 
 // icons
 import Icon from 'react-native-vector-icons/Ionicons';
-import {ActivityIndicatorOverlay} from '../components/ActivityIndicatorOverlay';
 
 const loginSchema = z.object({
   email: z
@@ -39,6 +40,7 @@ const loginSchema = z.object({
 export default function RegisterScreen({navigation}: any) {
   const passwordInputRef = useRef<TextInput>(null);
   const {onRegister, isLoading} = useAuth();
+  const {showModal, hideModal} = useModal();
 
   const methods = useForm({
     mode: 'onBlur',
@@ -48,16 +50,32 @@ export default function RegisterScreen({navigation}: any) {
   const handleRegister: SubmitHandler<Register> = async data => {
     const response = await onRegister!(data as Register);
     if (response?.error) {
-      console.log(response);
-      Alert.alert('Error', response.msg);
+      showModal(
+        'Registration Error',
+        response.status === 409
+          ? 'An account with this email already exists. Please use a different email or go to the Login screen.'
+          : response.message,
+        response.status === 409 && (
+          <Button
+            title="Log in"
+            onPress={() => {
+              hideModal();
+              navigation.navigate('Login');
+            }}
+          />
+        ),
+      );
     } else {
-      Alert.alert('Success', 'You have signed up successfully');
+      Alert.alert(
+        'Almost done!',
+        "Check your email for a validation link. Click the link in the email to activate your account. Resend validation email. Didn't get the email? Contact us.",
+      );
     }
   };
 
   return (
     <View style={styles.container}>
-      {isLoading && <ActivityIndicatorOverlay text="Creating account..." />}
+      {isLoading && <Loader loading={isLoading} />}
       <FormProvider {...methods}>
         <Input
           name="email"
@@ -124,5 +142,8 @@ const styles = StyleSheet.create({
   linkText: {
     fontWeight: 'bold',
     marginLeft: 5,
+  },
+  boldText: {
+    fontWeight: 'bold',
   },
 });

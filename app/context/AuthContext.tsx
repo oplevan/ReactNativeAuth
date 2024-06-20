@@ -21,7 +21,7 @@ type AuthProps = {
 };
 
 const TOKEN_KEY = 'jwt-token-key';
-const API_URL = 'https://api.oplevan.com';
+const API_URL = 'http://localhost:3000';
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => {
@@ -54,10 +54,11 @@ export const AuthProvider = ({children}: any) => {
       setIsLoading(true);
       return await axios.post(`${API_URL}/auth/register`, data);
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
       return {
         error: true,
-        msg: error.response?.data?.message || 'Registration failed',
+        status: error.response.status,
+        message: error.response?.data?.message || 'Registration failed',
       };
     } finally {
       setIsLoading(false);
@@ -76,11 +77,11 @@ export const AuthProvider = ({children}: any) => {
       await SecureStore.setItemAsync(TOKEN_KEY, response.data.token);
       return {success: true};
     } catch (error: any) {
-      // console.log(JSON.stringify(error.response, null, '\t'));
       return {
         error: true,
         status: error.response.status,
-        msg: error.response?.data?.message || 'Login failed',
+        email: error.response.data.email,
+        message: error.response?.data?.message || 'Login failed',
       };
     } finally {
       setIsLoading(false);

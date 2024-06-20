@@ -10,6 +10,7 @@ import {
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Login, useAuth} from '../context/AuthContext';
+import {useModal} from '../context/ModalContext';
 import {
   FieldValues,
   FormProvider,
@@ -20,11 +21,10 @@ import {
 // components
 import Button from '../components/Button';
 import Input from '../components/Input';
+import Loader from '../components/Loader';
 
 // icons
 import Icon from 'react-native-vector-icons/Ionicons';
-import {ActivityIndicatorOverlay} from '../components/ActivityIndicatorOverlay';
-import {useModal} from '../context/ModalContext';
 
 const loginSchema = z.object({
   email: z
@@ -50,26 +50,33 @@ export default function LoginScreen({navigation}: any) {
   const handleLogin: SubmitHandler<Login> = async data => {
     const response = await onLogin!(data as Login);
     if (response?.error) {
-      console.log(response);
       if (response.status === 403) {
         showModal(
           'Email Not Verified',
-          'Please verify your account by clicking the link in the email we sent to you. Also check the spam folder. If you do not have this email then click the button below to resend it.',
+          <Text>
+            Please, confirm your email by clicking the link we sent to{' '}
+            <Text style={styles.boldText}>{response.email}</Text>.
+          </Text>,
           <>
             <Button
               title="Resend verification email"
               onPress={() => {
-                // Call function to resend verification email
                 showModal(
-                  'Verification Email Sent',
-                  'A new verification email has been sent to your inbox.',
+                  'Verification email sent',
+                  <Text>
+                    We just sent a new link to{' '}
+                    <Text style={styles.boldText}>{response.email}</Text>.
+                    {'\n\n'} If you don't receive an email from us within 10
+                    minutes, please contact our support team{' '}
+                    <Text style={styles.boldText}>support@mail.com</Text>
+                  </Text>,
                 );
               }}
             />
           </>,
         );
       } else {
-        Alert.alert('Error: ' + response.status, response.msg);
+        Alert.alert('Error', response.message);
       }
     } else {
       Alert.alert('Success', 'You have logged in successfully');
@@ -78,7 +85,7 @@ export default function LoginScreen({navigation}: any) {
 
   return (
     <View style={styles.container}>
-      {isLoading && <ActivityIndicatorOverlay text="Logging in..." />}
+      {isLoading && <Loader loading={isLoading} text="Logging in..." />}
       <FormProvider {...methods}>
         <Input
           name="email"
@@ -150,5 +157,8 @@ const styles = StyleSheet.create({
   linkText: {
     fontWeight: 'bold',
     marginLeft: 5,
+  },
+  boldText: {
+    fontWeight: 'bold',
   },
 });
