@@ -1,12 +1,5 @@
 import React, {useRef} from 'react';
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  Pressable,
-  Alert,
-} from 'react-native';
+import {View, StyleSheet, TextInput, Text, Pressable} from 'react-native';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Login, useAuth} from '../context/AuthContext';
@@ -40,46 +33,85 @@ const loginSchema = z.object({
 export default function LoginScreen({navigation}: any) {
   const passwordInputRef = useRef<TextInput>(null);
   const {onLogin, isLoading} = useAuth();
-  const {showModal} = useModal();
+  const {showModal, hideModal} = useModal();
 
   const methods = useForm({
     mode: 'onBlur',
     resolver: zodResolver(loginSchema),
   });
 
+  const errors = [
+    {
+      status: 403,
+      title: 'Email not verified',
+      message:
+        'Please, check your inbox and click the link to confirm your email address. Or request a new link below.',
+      action: (
+        <Button
+          title="Resend verification email"
+          onPress={() => {
+            showModal(
+              'Check your inbox',
+              <Text>
+                We just sent you a new link. If you don't receive an email from
+                us within 10 minutes, please contact our support team{' '}
+                <Text style={styles.boldText}>support@mail.com</Text>
+              </Text>,
+            );
+          }}
+        />
+      ),
+    },
+    {
+      status: 404,
+      title: 'Not Found',
+      message:
+        "We couldn't find an account associated with this email address.",
+      action: (
+        <Button
+          title="Register"
+          onPress={() => {
+            hideModal();
+            navigation.navigate('Register');
+          }}
+        />
+      ),
+    },
+    {
+      status: 401,
+      title: 'Unauthorized',
+      message: 'Invalid credentials',
+      action: null,
+    },
+    {
+      status: 400,
+      title: 'Bad Request',
+      message: 'Incorrect password. Please try again',
+      action: null,
+    },
+    {
+      status: 500,
+      title: 'Internal Server Error',
+      message: 'Something went wrong. Please try again.',
+      action: null,
+    },
+  ];
+
   const handleLogin: SubmitHandler<Login> = async data => {
     const response = await onLogin!(data as Login);
     if (response?.error) {
-      if (response.status === 403) {
-        showModal(
-          'Email Not Verified',
-          <Text>
-            Please, confirm your email by clicking the link we sent to{' '}
-            <Text style={styles.boldText}>{response.email}</Text>.
-          </Text>,
-          <>
-            <Button
-              title="Resend verification email"
-              onPress={() => {
-                showModal(
-                  'Verification email sent',
-                  <Text>
-                    We just sent a new link to{' '}
-                    <Text style={styles.boldText}>{response.email}</Text>.
-                    {'\n\n'} If you don't receive an email from us within 10
-                    minutes, please contact our support team{' '}
-                    <Text style={styles.boldText}>support@mail.com</Text>
-                  </Text>,
-                );
-              }}
-            />
-          </>,
-        );
-      } else {
-        Alert.alert('Error', response.message);
-      }
-    } else {
-      Alert.alert('Success', 'You have logged in successfully');
+      showModal(
+        // modal title
+        errors.find(err => err.status === response.status)?.title ||
+          'Login Error',
+
+        // modal message/body
+        errors.find(err => err.status === response.status)?.message ||
+          'Something went wrong. Please try again.',
+
+        // modal footer/actions
+        errors.find(err => err.status === response.status)?.action,
+      );
     }
   };
 

@@ -1,12 +1,5 @@
 import React, {useRef} from 'react';
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  Pressable,
-  Alert,
-} from 'react-native';
+import {View, StyleSheet, TextInput, Text, Pressable} from 'react-native';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Register, useAuth} from '../context/AuthContext';
@@ -53,7 +46,7 @@ export default function RegisterScreen({navigation}: any) {
       showModal(
         'Registration Error',
         response.status === 409
-          ? 'An account with this email already exists. Please use a different email or go to the Login screen.'
+          ? 'An account with this email already exists. Please use a different email or log in.'
           : response.message,
         response.status === 409 && (
           <Button
@@ -66,9 +59,20 @@ export default function RegisterScreen({navigation}: any) {
         ),
       );
     } else {
-      Alert.alert(
+      showModal(
         'Almost done!',
-        "Check your email for a validation link. Click the link in the email to activate your account. Resend validation email. Didn't get the email? Contact us.",
+        <Text>
+          We've sent a validation link to{' '}
+          <Text style={styles.boldText}>{data.email}</Text>. Click the link to
+          confirm your email account.
+        </Text>,
+        <Button
+          title="Log in"
+          onPress={() => {
+            hideModal();
+            navigation.navigate('Login');
+          }}
+        />,
       );
     }
   };
