@@ -49,7 +49,12 @@ export default function ForgotPassword({navigation}: any) {
       </Text>
       <View style={styles.formContainer}>
         <FormProvider {...methods}>
-          <Input name="email" label="Enter your email" returnKeyType="done" />
+          <Input
+            name="email"
+            label="Enter your email"
+            returnKeyType="done"
+            keyboardType="email-address"
+          />
           <Button
             title="Get OTP"
             onPress={methods.handleSubmit(

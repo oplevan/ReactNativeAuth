@@ -124,6 +124,7 @@ export default function LoginScreen({navigation}: any) {
           label="Email"
           returnKeyType="next"
           onSubmitEditing={() => passwordInputRef.current?.focus()}
+          keyboardType="email-address"
         />
         <Input
           name="password"
