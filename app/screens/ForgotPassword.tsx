@@ -1,4 +1,10 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React from 'react';
 import {
   FieldValues,
@@ -19,7 +25,7 @@ const schema = z.object({
     .email({message: 'Invalid email address'}),
 });
 
-export default function ForgotPassword() {
+export default function ForgotPassword({navigation}: any) {
   const methods = useForm({
     mode: 'onBlur',
     resolver: zodResolver(schema),
@@ -27,9 +33,10 @@ export default function ForgotPassword() {
 
   const handleSubmit: SubmitHandler<Login> = async data => {
     console.log(data);
+    navigation.navigate('Verify', data);
   };
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior="position" style={styles.container}>
       <Image
         source={require('../assets/images/forgot-password.png')}
         style={styles.image}
@@ -47,23 +54,23 @@ export default function ForgotPassword() {
             onPress={methods.handleSubmit(
               handleSubmit as SubmitHandler<FieldValues>,
             )}
+            style={styles.button}
           />
         </FormProvider>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     backgroundColor: '#fff',
     padding: 38,
   },
   image: {
-    marginVertical: 70,
+    margin: 'auto',
+    marginVertical: 50,
   },
   title: {
     fontSize: 24,
@@ -76,8 +83,10 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   formContainer: {
-    flex: 1,
-    width: '100%',
+    width: 'auto',
     marginTop: 30,
+  },
+  button: {
+    marginTop: 15,
   },
 });

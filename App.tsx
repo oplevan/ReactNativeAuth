@@ -8,6 +8,7 @@ import Home from './app/screens/Home';
 import Login from './app/screens/Login';
 import Register from './app/screens/Register';
 import ForgotPassword from './app/screens/ForgotPassword';
+import Verify from './app/screens/Verify';
 
 // import components
 import HeaderBackButton from './app/components/HeaderBackButton';
@@ -28,6 +29,7 @@ type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Forgot: undefined;
+  Verify: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -50,15 +52,24 @@ const RootStack = () => {
             }}>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen
+              name="Register"
+              component={Register}
+              options={({navigation}) => ({
+                headerLeft: () => <HeaderBackButton navigation={navigation} />,
+              })}
+            />
+            {/* Screen where user can request OTP (one-time-password) */}
+            <Stack.Screen
               name="Forgot"
               component={ForgotPassword}
               options={({navigation}) => ({
                 headerLeft: () => <HeaderBackButton navigation={navigation} />,
               })}
             />
+            {/* This is where user can verify the OTP received via email */}
             <Stack.Screen
-              name="Register"
-              component={Register}
+              name="Verify"
+              component={Verify}
               options={({navigation}) => ({
                 headerLeft: () => <HeaderBackButton navigation={navigation} />,
               })}
