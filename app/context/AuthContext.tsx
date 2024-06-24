@@ -20,7 +20,7 @@ type AuthProps = {
   isLoading?: boolean;
 };
 
-const TOKEN_KEY = 'jwt-token-key';
+const TOKEN_KEY = 'JwtToken';
 const API_URL = 'http://localhost:3000';
 const AuthContext = createContext<AuthProps>({});
 
@@ -66,9 +66,14 @@ export const AuthProvider = ({children}: any) => {
   };
 
   const onLogin = async (credentials: Login) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await axios.post(`${API_URL}/auth/login`, credentials);
+
+      // set to false immediately after response 200 to ensure the modal
+      // is closed before the navigation resets to avoid app crash
+      response.status === 200 && setIsLoading(false);
+
       setAuthState({
         token: response.data.token,
         authenticated: true,
