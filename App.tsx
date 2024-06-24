@@ -1,18 +1,19 @@
 import React from 'react';
-import {AuthProvider, useAuth} from './app/context/AuthContext';
+import {AuthProvider, useAuth} from './src/contexts/AuthContext';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // import screens
-import Home from './app/screens/Home';
-import Login from './app/screens/Login';
-import Register from './app/screens/Register';
-import ForgotPassword from './app/screens/ForgotPassword';
-import Verify from './app/screens/Verify';
+import Home from '@screens/Home';
+import Login from '@screens/auth/Login';
+import Register from '@screens/auth/Register';
+import ForgotPassword from '@screens/auth/ForgotPassword';
+import Verify from '@screens/auth/Verify';
+import ResetPassword from '@screens/auth/ResetPassword';
 
 // import components
-import HeaderBackButton from './app/components/HeaderBackButton';
-import {ModalProvider} from './app/context/ModalContext';
+import HeaderBackButton from '@components/HeaderBackButton';
+import {ModalProvider} from '@contexts/ModalContext';
 
 export default function App(): React.JSX.Element {
   return (
@@ -30,6 +31,7 @@ type RootStackParamList = {
   Register: undefined;
   Forgot: undefined;
   Verify: undefined;
+  'Reset password': undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -70,6 +72,14 @@ const RootStack = () => {
             <Stack.Screen
               name="Verify"
               component={Verify}
+              options={({navigation}) => ({
+                headerLeft: () => <HeaderBackButton navigation={navigation} />,
+              })}
+            />
+            {/* New password screen */}
+            <Stack.Screen
+              name="Reset password"
+              component={ResetPassword}
               options={({navigation}) => ({
                 headerLeft: () => <HeaderBackButton navigation={navigation} />,
               })}

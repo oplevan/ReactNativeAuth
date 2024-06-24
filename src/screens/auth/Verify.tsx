@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {OtpInput} from 'react-native-otp-entry';
-import Button from '../components/Button';
+import Button from '@components/Button';
 
 export default function Verify({route, navigation}: any) {
   const {email} = route.params;
@@ -15,11 +15,12 @@ export default function Verify({route, navigation}: any) {
 
   const handleVerifyOTP = async () => {
     console.log(otp);
+    navigation.navigate('Reset password', {email});
   };
   return (
     <KeyboardAvoidingView behavior="position" style={styles.container}>
       <Image
-        source={require('../assets/images/enter-otp.png')}
+        source={require('@assets/images/enter-otp.png')}
         style={styles.image}
       />
       <Text style={styles.title}>Enter OTP</Text>

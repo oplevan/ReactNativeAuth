@@ -12,11 +12,12 @@ import {
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
-import {Login} from '../context/AuthContext';
+import {zodResolver} from '@hookform/resolvers/zod';
+
+import Input from '@components/Input';
+import Button from '@components/Button';
+import {Login} from '@contexts/AuthContext';
 
 const schema = z.object({
   email: z
@@ -38,7 +39,7 @@ export default function ForgotPassword({navigation}: any) {
   return (
     <KeyboardAvoidingView behavior="position" style={styles.container}>
       <Image
-        source={require('../assets/images/forgot-password.png')}
+        source={require('@assets/images/forgot-password.png')}
         style={styles.image}
       />
       <Text style={styles.title}>Forgot Password?</Text>

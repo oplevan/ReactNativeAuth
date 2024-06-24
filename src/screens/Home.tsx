@@ -1,7 +1,7 @@
 import {View, StyleSheet} from 'react-native';
 import React from 'react';
 import Button from '../components/Button';
-import {useAuth} from '../context/AuthContext';
+import {useAuth} from '../contexts/AuthContext';
 
 const Home = () => {
   const {onLogout} = useAuth();

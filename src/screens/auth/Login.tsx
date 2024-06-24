@@ -2,8 +2,7 @@ import React, {useRef} from 'react';
 import {View, StyleSheet, TextInput, Text, Pressable} from 'react-native';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {Login, useAuth} from '../context/AuthContext';
-import {useModal} from '../context/ModalContext';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   FieldValues,
   FormProvider,
@@ -11,13 +10,14 @@ import {
   useForm,
 } from 'react-hook-form';
 
-// components
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Loader from '../components/Loader';
+// contexts
+import {Login, useAuth} from '@contexts/AuthContext';
+import {useModal} from '@contexts/ModalContext';
 
-// icons
-import Icon from 'react-native-vector-icons/Ionicons';
+// components
+import Button from '@components/Button';
+import Input from '@components/Input';
+import Loader from '@components/Loader';
 
 const loginSchema = z.object({
   email: z

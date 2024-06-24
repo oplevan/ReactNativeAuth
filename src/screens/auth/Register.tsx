@@ -2,22 +2,22 @@ import React, {useRef} from 'react';
 import {View, StyleSheet, TextInput, Text, Pressable} from 'react-native';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {Register, useAuth} from '../context/AuthContext';
-import {useModal} from '../context/ModalContext';
 import {
   FieldValues,
   FormProvider,
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+// contexts
+import {Register, useAuth} from '@contexts/AuthContext';
+import {useModal} from '@contexts/ModalContext';
 
 // components
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Loader from '../components/Loader';
-
-// icons
-import Icon from 'react-native-vector-icons/Ionicons';
+import Button from '@components/Button';
+import Input from '@components/Input';
+import Loader from '@components/Loader';
 
 const loginSchema = z.object({
   email: z
